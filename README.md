@@ -1,113 +1,28 @@
-App Academy Open - home
-Your Content
-
-Practice: React Router Intro
+Practice: React Router Navigation
 Focus
 Mark as Complete 
-React Router
-Router Introduction
+Navigation
+Navigation
 
-3 users recently completed this Reading
-Now that you know how to render components in a React app, how do you handle rendering components only on specific URL paths to simulate navigating through different webpages on a single page app? React Router is the answer!
+2 users recently completed this Reading
+Now that you know how to create front-end routes with React Router, you'll need to implement a way for your users to navigate the routes! React Router's Link, NavLink, and Redirect components, and React Router's useHistory hook can help you do this.
 
-Think about how you created server-side routes in your previous projects. For example, you could define a GET route for /users/:userId. Then, when a user goes to http://localhost:3000/users/2, this GET route would cause the server to respond with user 2's show page in HTML. In the default React setup, you lose the ability to create routes in this way. This is the problem React Router aims to solve.
+In this article, you'll be working off of the demo project you built in the React Router Intro reading. When you finish this article, you should be able to use the following components from the react-router-dom library:
 
-React Router is a frontend routing library that allows you to control which components to display using the browser location. A user can also copy and paste a URL and email it to a friend or link to it from their own website.
+<Link> or <NavLink> to create links with relative paths to routes in your application (like "/users/1")
+<Redirect> to redirect a user to another path (e.g., a login page when the user is not logged in)
+React Router's useHistory hook to update a browser's URL programmatically.
+Adding links for navigation
+React Router's <Link> is one way to simplify navigation around your app. It issues an on-click navigation event to a route defined in your app's router. Using <Link> renders an anchor tag with a correctly set href attribute.
 
-When you finish this article, you should be able to use the following from the react-router-dom library:
-
-<BrowserRouter> to provide your application access to the react-router-dom library; and
-<Route> to connect specific URL paths to specific components you want rendered; and
-<Switch> to wrap several Route elements, rendering only one even if several match the current URL; and
-React Router's match prop to access route path parameters.
-Getting started with routing
-Since you are writing single page apps, you don't want to refresh the page each time you change the browser location. Instead, you want to update the browser location and your app's response using just JavaScript. This is known as client-side routing. You are using React, so you will use React Router to do this.
-
-Create a simple react project template with npm:
-
-npx create-react-app my-app --template @appacademy/react-v17 --use-npm
-Change directory into my-app and install React Router:
-
-cd my-app && npm install --save react-router-dom@^5.1.2
-Start the React development server at http://localhost:3000:
-
-npm start
-Now import BrowserRouter from react-router-dom in your entry file, src/index.js:
+Link
+To use it, update your imports from the react-router-dom package to include Link in your entry file, src/index.js:
 
 // ./src/index.js
-import { BrowserRouter } from 'react-router-dom';
-BrowserRouter
-BrowserRouter is the primary component of the router that wraps your route hierarchy. It makes routing information from React Router available to all its descendent components. For example, if you want to give <App> and all its children components access to React Router, you would wrap <App> like so:
+import { BrowserRouter, Route, Link } from 'react-router-dom';
+Note that <Link> can take two props: to and onClick.
 
-// ./src/index.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-
-const Root = () => {
-  return (
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  );
-};
-(You would also need to connect this new Root component in ReactDOM.render instead of App.)
-
-// ./src/index.js
-ReactDOM.render(
-  <React.StrictMode>
-    <Root />
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
-Now you can route the rendering of certain components to certain URLs (e.g., https://www.website.com/profile).
-
-HashRouter
-Alternatively, you could import and use HashRouter from react-router-dom. Links for applications that use <HashRouter> would look like https://www.website.com/#/profile (with a # between the domain and path).
-
-You'll focus on using <BrowserRouter>. <HashRouter> is primarily used in legacy code or for sites that need to be compatible with legacy browsers.
-
-<Route> component
-React Router helps your React application render specific components based on the URL path. The React Router component you'll use most often is <Route>.
-
-The <Route> component is used to wrap another component, causing that component to be rendered only if a certain URL is matched. The behavior of the <Route> component is controlled by the following props: exact and path.
-
-The App component at App.js is returning <h1>Hello from App</h1>. Add a ! to change the rendered text to Hello from App!. Create a similar component Users that returns <h1>Hello from Users!</h1>. To do this, add a components folder in the src folder and make a file called Users.js. The Users.js file should look exactly like App.js except with Users substituted everywhere for App.
-
-Now let's refactor your index.js file so that you can create your routes within a Root component. First, run your imports. You'll need the App and Users component along with the BrowserRouter and Route components from react-router-dom.
-
-// ./src/index.js
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter, Route } from 'react-router-dom';
-import App from './App';
-import Users from './components/Users';
-const Root = () => {
-  return (
-    <BrowserRouter>
-      <div>
-        {/* TODO: Routes */}
-      </div>
-    </BrowserRouter>
-  );
-};
-Finally, make sure that you have connected the Root component in ReactDOM.render instead of App.
-
-ReactDOM.render(
-  <React.StrictMode>
-    <Root />
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
-Put it all together and you've got a dynamic browser routing component.
-
-Note that BrowserRouter can only have a single child component, so the snippet above wraps all routes within a parent <div> element.
-
-Now let's create some routes!
-
-<Route>
-Your Root component should render the App component at the root path of /. Do this by wrapping App with a Route containing a path prop set to /.
+The to prop is a route location description that points to an absolute path (e.g., /users). Add the following Link components in your index.js file above your routes:
 
 // ./src/index.js
 // ...
@@ -115,170 +30,230 @@ const Root = () => {
   return (
     <BrowserRouter>
       <div>
-        <Route path="/">
-          <App />
-        </Route>
-      </div>
-    </BrowserRouter>
-  );
-};
-// ...
-Navigate to http://localhost:3000. You should see the text, "Hello from App!"
-
-Next, render the Users component at the path of /users.
-
-// ./src/index.js
-// ...
-const Root = () => {
-  return (
-    <BrowserRouter>
-      <div>
-        <Route path="/">
+        <Link to="/">App</Link>
+        <Link to="/users">Users</Link>
+        <Link to="/users/1">Andrew's Profile</Link>
+        <Route exact path="/">
           <App />
         </Route>
         <Route path="/users">
           <Users />
         </Route>
+        <Route path="/users/:userId">
+          <Profile />
+        </Route>
       </div>
     </BrowserRouter>
   );
 };
 // ...
-The wrapped component App will be rendered only when the path is matched. The path matches the URL when it matches some initial portion of the URL. For example, a path of / would match both / and /users URLs. (/ matches the URL /users because /users begins with a /.)
+The onClick prop is just like any other JSX click handler. You can write a function that takes in an event and handles it. Add the following Link before your routes and the following click handler function within your Root component:
 
-Take a moment to navigate to http://localhost:3000/users to see both "Hello from App!" and "Hello from Users!", which means both the App component and the Users component are rendering at the path of /users.
+// ./src/index.js
+// ...
+const Root = () => {
+  // click handler function
+  const handleClick = () => {
+    console.log('Thanks for clicking!')
+  };
+  return (
+    <BrowserRouter>
+      <div>
+        <Link to="/">App</Link>
+        <Link to="/users">Users</Link>
+        <Link to="/users/1">Andrew's Profile</Link>
+        {/* Link with onClick prop */}
+        <Link to="/" onClick={handleClick}>App with click handler</Link>
 
-If you navigate to a route NOT beginning in /users, like /test, then you should only see the App component rendered.
+        <Route exact path="/">
+          <App />
+        </Route>
+        <Route path="/users">
+          <Users />
+        </Route>
+        <Route path="/users/:userId">
+          <Profile />
+        </Route>
+      </div>
+    </BrowserRouter>
+  );
+};
+// ...
+Now, test your routes and links! If you inspect the page, you'll see that your links are now rendered as <a> elements. Notice that clicking the App with click handler link logs a message in your console while directing your browser to render the App component.
 
-exact prop
-If this exact flag is set as a prop in the Route component, the path will match only when it exactly matches the URL. If you add exact to the route for App, then browsing to the /users path will no longer match / and only the Users component will be rendered (instead of both the App component and the Users component).
+NavLink
+The <NavLink> works just like a <Link> but with a little extra functionality. It has the ability to add extra styling when the path it links to matches the current path. This makes it an ideal choice for a navigation bar, hence the name. This styling can be controlled by three extra props: activeClassName, activeStyle, and exact. To begin using NavLink, update your imports from the react-router-dom package:
 
-<Route exact path="/">
-  <App />
-</Route>
-<Route path="/users">
-  <Users />
-</Route>
-Navigate to http://localhost:3000/users. You should see only "Hello from Users!", which means only the Users component is rendering at the path of /users. The App component will now only render at exactly the path of /.
+import { BrowserRouter, Route, NavLink } from 'react-router-dom';
+The activeClassName prop of the NavLink component allows you to set a CSS class name for styling the NavLink when its route is active. By default, the activeClassName is set to active. This means that you simply need to add an .active class to your CSS file to add active styling to your link. A NavLink will be active if its to prop path matches the current URL.
 
-Path params and useParams
-A component's props can also hold information about a URL's parameters. The router will match route segments starting at : up to the next /, ?, or #. Such segments are wildcard values that make up your route parameters.
+Update all your Link elements to NavLink elements. Now let's change your "Users", "Hello", and "Andrew's Profile" links to be different colors and have a larger font size when active. To do this, set an appropriate activeClassName prop on those NavLinks.
 
-For example, take the route below:
+<NavLink to="/">App</NavLink>
+<NavLink activeClassName="red" to="/users">Users</NavLink>
+<NavLink activeClassName="blue" to="/hello">Hello</NavLink>
+<NavLink activeClassName="green" to="/users/1">Andrew's Profile</NavLink>
+<NavLink to="/" onClick={handleClick}>App with click handler</NavLink>
+This is what the rendered HTML <a> tag will look like when the browser navigates to the / or /users path:
 
-<Route path="/users/:userId">
-  <Profile />
-</Route>
-The router would break down the full /users/:userId path into two parts: /users, :userId.
+<!-- Navigated to the / path (the activeClassName
+     prop is set to "active" by default) -->
+<a href="/" class="active">App</a>
 
-The Profile component can access the :userId part of the http://localhost:3000/users/:userId URL through a function given by React Router called useParams. useParams returns information about all the wildcard values in your route parameters.
+<!-- NOT navigated to the / path -->
+<a href="/">App</a>
+<!-- Navigated to the /users path (the activeClassName
+     prop is manually set to "red") -->
+<a href="/users" class="red">Users</a>
 
-To use it, simply import the useParams function from react-router-dom and call it inside of a React component. It returns a params object. For example:
+<!-- NOT navigated to the `/users` path -->
+<a href="/users">Users</a>
+Now add the following class styles to your index.css file:
 
-import React from 'react';
-import { useParams } from 'react-router-dom';
-
-function Example() {
-  const params = useParams();
+.active {
+  font-weight: bold;
 }
-The params object would then have a property of userId which would hold the value of the :userId wildcard value. Let's render the userId parameter in a user profile component. Take a moment to create a Profile.js file in the components folder with the following code:
+
+.red {
+  color: red;
+  font-size: 30px;
+}
+
+.blue {
+  color: blue;
+  font-size: 30px;
+}
+
+.green {
+  color: green;
+  font-size: 30px;
+}
+Test your styled links! Notice how the App and App with click handler links are always boldface. This is because all of your links begin with--and thus include--the / path, meaning that the link to / will always be active. (Do you notice a related issue when you navigate to Andrew's Profile?)
+
+The activeStyle prop is a style object that will be applied inline to the NavLink when its to prop matches the current URL. Add the following activeStyle to your App link and comment out the .active class in your CSS file.
+
+<NavLink to="/" activeStyle={{ fontWeight: "bold" }}>App</NavLink>
+Now the following html is rendered when at the / path:
+
+<a href="/" style="font-weight:bold;" class="active">App</a>
+Notice how your App with click handler is not boldface anymore. The default active class is still applied to the link, but that class no longer has any CSS stylings defined for it. Uncomment the .active class in your CSS file to bring the boldface back to this NavLink.
+
+The exact prop is a boolean that defaults to false. If set to true, then the activeStyle and activeClassName props will only be applied when the current URL matches the to prop exactly. Update your App and App with click handler links with an exact prop set. Just like in your routes, you can use the exact flag instead of exact={true}.
+
+<NavLink to="/" exact={true} activeStyle={{ fontWeight: "bold" }}>App</NavLink>
+<NavLink to="/" exact onClick={handleClick}>App with click handler</NavLink>
+Now your App and App with click handler links will appear in boldface only when you have navigated precisely to the / path.
+
+Switching between routes
+You came across styling issues because the /users and /users/1 paths matched the / path. Routing can have this issue as well. Sometimes, you want to select only one route to match out of a list of routes. React Router's <Switch> component can help you control the switching between routes.
+
+The <Switch> component allows you to render only one <Route> even if several match the current URL. You can nest as many Routes as you wish between the opening and closing Switch tags, but only the first one that matches the current URL will be rendered.
+
+This is particularly useful if you want a default component that will only render if none of our other routes match. View the example below. Without the Switch, DefaultComponent would always render: since there isn't set a path in the DefaultComponent route, it would simply use the default path of /. With the Switch, the DefaultComponent will render only when neither of the preceding routes match.
+
+<Switch>
+  <Route path="some/url">
+    <SomeComponent />
+  </Route>
+  <Route path="some/other/url">
+    <OtherComponent />
+  </Route>
+  <Route>
+    <DefaultComponent />
+  </Route>
+</Switch>
+Import Switch from react-router-dom and add <Switch> tags around your routes to take care of ordering and switching between your routes! Begin by adding the following route to the bottom of your routes to render a 404: Page not found message:
+
+<Route>
+  <h1>404: Page not found</h1>
+</Route>
+This is what your Root component should look like at this point:
+
+// ./src/index.js
+// ...
+const Root = () => {
+  // click handler function
+  const handleClick = () => {
+    console.log('Thanks for clicking!')
+  };
+  return (
+    <BrowserRouter>
+      <div>
+        <NavLink to="/" exact={true} activeStyle={{ fontWeight: "bold" }}>App</NavLink>
+        <NavLink activeClassName="red" to="/users">Users</NavLink>
+        <NavLink activeClassName="blue" to="/hello">Hello</NavLink>
+        <NavLink activeClassName="green" to="/users/1">Andrew's Profile</NavLink>
+        {/* NavLink with onClick prop */}
+        <NavLink to="/" exact onClick={handleClick}>App with click handler</NavLink>
+
+        <Switch>
+          <Route exact path="/">
+            <App />
+          </Route>
+          <Route path="/users">
+            <Users />
+          </Route>
+          <Route path="/users/:userId">
+            <Profile />
+          </Route>
+          <Route>
+            <h1>404: Page not found</h1>
+          </Route>
+        </Switch>
+
+      </div>
+    </BrowserRouter>
+  );
+};
+// ...
+Now you have control over the precedence of rendered components! Try navigating to http://localhost:3000/asdf or any other route you have not defined. The <h1>404: Page not found</h1> JSX of the last <Route> will be rendered whenever the browser attempts to visit an undefined route.
+
+Another thing to note is that the Profile component will not render at the path of /users/:userId anymore because the Route for the Users component will match the path of /users first. Go ahead and fix that!
+
+Redirecting users
+What if you want to redirect users to a login page when they aren't logged in? The <Redirect> component from React Router helps you redirect users!
+
+The <Redirect> component takes only one prop: to. When it renders, it replaces the current URL with the value of its to prop. Typically, you conditionally render <Redirect> to redirect the user away from some page you don't want them to visit. The example below checks whether the wildcard of userId in the Profile component is an invalid id of 0. If so, then it will redirect the user to the home page, /.
 
 // ./src/components/Profile.js
 import React from "react";
-import { useParams } from 'react-router-dom';
+import { Redirect, useParams } from 'react-router-dom';
 
 const Profile = () => {
   const params = useParams();
   const { userId } = params;
 
+  if (userId === "0") return <Redirect to="/" />;
+
   return <h1>Hello from User Profile {userId}!</h1>
 }
 
 export default Profile;
-Don't forget to import your Profile component in src/index.js!
+Note that useParams returns parameters as strings, so we have to check the value of userId against "0" instead of 0. (Alternatively, we could use parseInt() to transform userId into an int or simply use the == operator instead of ===.)
 
-In a real world application, you would use this wildcard to make an AJAX call to fetch the user information from the database and render the returned data in the Profile component. Recall that your Profile component was rendered at the path /users/:userId. Thus you can use your userId parameters to fetch a specific user.
+useHistory
+You know how to redirect users with a <Redirect> component, but what if you need to redirect users programmatically? You've learned about React Router's useParams hook, now let's go over another one of the React Router hooks, useHistory!
 
-The useParams function is a specific type of function used in React components called a hook. Hooks are functions that give a component access to data that doesn't need to be passed down directly by the parent component. They also help manage the flow of data across the multiple renders of a React component. You'll see more examples of React Router and React hooks later this week.
+The useHistory hook returns a history object that has convenient methods for navigation. history lets you update the URL programmatically. For example, suppose you want to push a new URL when the user clicks a button. It has two useful methods:
+
+push - This adds a new URL to the end of the history stack. That means that clicking the back button will take the browser to the previous URL. Note that pushing the same URL multiple times in a row will have no effect; the URL will still only show up on the stack once. In development mode, pushing the same URL twice in a row will generate a console warning. This warning is disabled in production mode.
+replace - This replaces the current URL on the history stack, so the back button won't return you to the current URL. For example:
+import { useHistory } from 'react-router-dom';
+
+export default function Example() {
+  // history object is returned from useHistory hook and has various methods
+  const history = useHistory();
+  
+  // Pushing a new URL (and adding to the end of history stack):
+  const handleClick = () => history.push('/some/url');
+  
+  // Replacing the current URL (won't be tracked in history stack):
+  const redirect = () => history.replace('/some/other/url');
+  // ...
+}
+Note: You should try to use <Redirect>, <Link>, or <NavLink> before using useHistory to redirect your user. Don't try to force the code to use <Redirect>, <Link>, or <NavLink>, however, if it makes your code less readable. useHistory is sometimes the best choice to avoid unnecessary complexity.
 
 What you learned
-In this article, you learned how to use the BrowserRouter and Route components from the React Router library. You also learned how to create routes to render specific components at different URL paths and manage the order of the routes. You learned how to use the exact prop flag on a Route component to ensure that only the specified path renders specified component. Finally, you learned how to use the useParams hook from the React Router library to access the params of the URL path and get the path's wildcard values.
+In this article, you learned how to create navigation links for your route paths using the <Link> and <NavLink> components. You also learned how to redirect users using the <Redirect> component and update a browser's URL programmatically (or when triggered by user input) by using a history object returned from React Router's useHistory hook.
 
-To learn more about the Route component, see the docs on Route. To learn more about the React Router hook useParams, see the docs on useParams.
-
---------------------------
-# Create React App Template
-
-A no-frills template from which to create React applications with
-[Create React App](https://github.com/facebook/create-react-app).
-
-```sh
-npx create-react-app my-app --template @appacademy/simple --use-npm
-```
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+See the docs on Link, docs on NavLink, docs on Redirect, and docs on useHistory to learn more about what you can do with them.
